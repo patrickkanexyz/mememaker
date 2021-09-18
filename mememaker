@@ -1,3 +1,48 @@
 #!/bin/sh
 # MemeMaker: Make imagemacro style memes quickly from the command line.
+# Dependencies: imagemagick, font: impact
 # Licence: GPL v3
+
+if [ -z $(command -v convert) ]; then
+	echo "Imagemagick not found. Exiting..."
+	exit 1
+fi
+
+main() {
+	TOP="${1}"
+	BOTTOM="${2}"
+	IMG="${3}"
+
+	# resize background image
+	convert "${IMG}" -resize 1080x1080^ "${IMG}"_resized.png
+	
+	# make overlay with top text
+	convert -background none \
+		-fill white \
+		-stroke black \
+		-pointsize 100 \
+		-font impact \
+		-gravity north \
+		-size 1080x1080 \
+		caption:"${TOP}" \
+		top.png
+
+	# make overlay with bottom text
+	convert -background none \
+		-fill white \
+		-stroke black \
+		-pointsize 100 \
+		-font impact \
+		-gravity south \
+		-size 1080x1080 \
+		caption:"${BOTTOM}" \
+		bottom.png
+
+	# flatten into one image
+	convert -page +0+0 "${IMG}_resized.png" \
+		-page +0+0 top.png \
+		-page +0+0 bottom.png \
+		-layers flatten output.png
+}
+
+main "$@"
