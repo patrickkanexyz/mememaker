@@ -12,6 +12,12 @@ main() {
 	TOP="${1}"
 	BOTTOM="${2}"
 	IMG="${3}"
+	#TODO: strip any filetypes (.jpg) from OUTPUT
+	OUTPUT="${4}"
+
+	if [ -z "${OUTPUT}" ]; then
+		OUTPUT="output"
+	fi
 
 	# resize background image
 	convert "${IMG}" -resize 1080x1080^ "${IMG}"_resized.png
@@ -42,7 +48,7 @@ main() {
 	convert -page +0+0 "${IMG}_resized.png" \
 		-page +0+0 top.png \
 		-page +0+0 bottom.png \
-		-layers flatten output.png
+		-layers flatten "${OUTPUT}".png
 
 	# cleanup intermediate images
 	rm "${IMG}"_resized.png top.png bottom.png
