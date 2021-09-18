@@ -43,6 +43,9 @@ main() {
 		-page +0+0 top.png \
 		-page +0+0 bottom.png \
 		-layers flatten output.png
+
+	# cleanup intermediate images
+	rm "${IMG}"_resized.png top.png bottom.png
 }
 
 main "$@"
